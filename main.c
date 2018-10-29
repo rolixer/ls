@@ -26,20 +26,19 @@ char *getGname(int gid){
 	return grp->gr_name;
 };
 
-char *getDate(time_t time){
-	struct tm *date_time;
-	date_time = gmtime(time);
+void getDate(const time_t time, char *date){
+	struct tm *_date;
+	_date = localtime(&time);
 	
-	char *buff;
-	sprintf(buff, 
-
-	return buff;	
+	strftime(date, 255, "%b %d %R", _date);
+	
 };
 
 void list_dir(char *name) {
 	DIR *dir;
 	struct dirent *dp;
 	struct stat statbuf;
+	char date[255];
 
 	if ((dir = opendir(name)) == NULL) {
 		perror("Blad");
@@ -47,12 +46,13 @@ void list_dir(char *name) {
 	while ((dp = readdir(dir)) != NULL) {
 		if (stat(dp->d_name, &statbuf) == -1)
 			continue;
-		printf("%o %d %s %s %s  %d %s\n", statbuf.st_mode,
+		getDate(statbuf.st_mtime, date);
+		printf("%o %lu %s %s %ld %s %s\n", statbuf.st_mode,
 					statbuf.st_nlink,
 					getUname(statbuf.st_uid),
 				    	getGname(statbuf.st_gid),
-					ctime(statbuf.st_atime),
 					statbuf.st_size,
+					date,
 		 		    	dp->d_name);
 	}
 	closedir(dir);
