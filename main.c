@@ -91,7 +91,7 @@ void list_dir(char *name) {
   }
   while ((dp = readdir(dir)) != NULL) {
     if (stat(dp->d_name, &statbuf) == -1) continue;
-	//if (dp->d_name[0] == '.') continue;
+	if (dp->d_name[0] == '.') continue;
     getDate(statbuf.st_mtime, date);
     getRights(statbuf.st_mode, rights);
     printf("%s %lu %s %s %ld %s %s\n",  rights,
